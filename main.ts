@@ -176,7 +176,7 @@ function reportButtonClicked(hoursPerTomato: number) {
 		}
 	}
 
-	appendToCSV(hoursPerTomato, tomatoesFinished, "obsidian_result.csv")
+	appendToCSV(hoursPerTomato, tomatoesFinished, "time_statistics_report.csv")
 }
 
 
@@ -233,13 +233,13 @@ function appendToCSV(hoursPerTomato: number, taskMap: TaskMap, filePath: string)
 			existingRow[key] = 0.0
 		})
 		Object.keys(taskMap).forEach((key:string) => {
-			existingRow[key] = taskMap[key];
+			existingRow[key] = taskMap[key] * hoursPerTomato;
 		});
 	} else {
 		// Create a new row with today's date
 		const newRow: Record<string, string | number> = { date: currentDate };
 		Object.keys(taskMap).forEach(key => {
-			newRow[key] = taskMap[key];
+			newRow[key] = taskMap[key] * hoursPerTomato;
 		});
 		csvData.push(newRow);
 	}
