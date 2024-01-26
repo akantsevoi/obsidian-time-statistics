@@ -167,11 +167,17 @@ function reportButtonClicked(hoursPerTomato: number) {
 				if (!key.endsWith("_sub_done_today")) {
 					return
 				}
+				let val = Number(value)
+				if (val === 0) {return}
+
 				let subProjKey = key.replace("_sub_done_today", "");
-				tomatoesFinished[mainReportKey+":"+subProjKey] = Number(value)
-				totalTomatoes+=Number(value)
+				tomatoesFinished[mainReportKey+":"+subProjKey] = val
+				totalTomatoes+=val
 			});
 
+			if (totalTomatoes==0){
+				continue
+			}
 			tomatoesFinished[frontmatter.reportKey] = totalTomatoes
 		}
 	}
@@ -233,13 +239,21 @@ function appendToCSV(hoursPerTomato: number, taskMap: TaskMap, filePath: string)
 			existingRow[key] = 0.0
 		})
 		Object.keys(taskMap).forEach((key:string) => {
-			existingRow[key] = taskMap[key] * hoursPerTomato;
+			let value = taskMap[key]
+			if (value === 0) {
+				return
+			}
+			existingRow[key] = value * hoursPerTomato;
 		});
 	} else {
 		// Create a new row with today's date
 		const newRow: Record<string, string | number> = { date: currentDate };
 		Object.keys(taskMap).forEach(key => {
-			newRow[key] = taskMap[key] * hoursPerTomato;
+			let value = taskMap[key]
+			if (value === 0) {
+				return
+			}
+			newRow[key] = value * hoursPerTomato;
 		});
 		csvData.push(newRow);
 	}
